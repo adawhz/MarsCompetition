@@ -7,17 +7,23 @@ using ExcelDataReader;
 using System.Data;
 using System.IO;
 using OpenQA.Selenium;
+using MarsCompetition.Tests;
+using MarsCompetition.Pages;
 
 namespace MarsCompetition.Excel
 {
     public class ExcelData
     {
-        public void readExcel()
-        {
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+        static ExcelData()
+        { 
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
+        public static DataTable? ReadExcelDataset(string filepath,string sheetname)
+        {   
+            
             Console.WriteLine("Reading excel data file...");
 
-            using (var stream = File.Open("ExcelDataFile/MarsCompetition.xlsx", FileMode.Open, FileAccess.Read))
+            using (var stream = File.Open(filepath, FileMode.Open, FileAccess.Read))
             {
                 using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
@@ -34,13 +40,80 @@ namespace MarsCompetition.Excel
                         }
                     });
 
-                    var sheet1 = result.Tables[0];
-                    foreach (DataRow row in sheet1.Rows)
-                    {
-                        //Console.WriteLine()
-                    }
+                    return result.Tables[sheetname];
+                    
                 }
             }
+        }
+
+        private static string[] availableDayColumns = new[] { "SunTime", "MonTime", "TueTime", "WedTime", "ThurTime", "FriTime", "SatTime" };
+        private static string GetCellValue(DataTable dataSet,int row,string col) 
+        {
+            var value = dataSet.Rows[row][col];
+            if (value == DBNull.Value || value == null)
+            {
+                return "";
+            }
+            else if (value is DateTime time)
+            {
+                return time.ToString("yyyy-MM-dd");
+            }
+            else
+            {
+                return value.ToString();
+            }
+        }
+        public static ICollection<ExcelTestCase> ReadShareNewSkilTestCases(string filepath, string sheetname)
+        {
+
+            var dataSet = ReadExcelDataset(filepath,sheetname);
+            var tests = new List<ExcelTestCase>();
+            for (int i = 0; i < dataSet.Rows.Count; i++)
+            {
+                var availableDays = new List<AvailableDay>();
+                for (int j = 0; j < availableDayColumns.Length;j++) 
+                {
+                    var day = availableDayColumns[j];
+                    var time = GetCellValue(dataSet, i, day);
+                    if (time != "")
+                    {
+                        var hours = time.Split('-');
+                        availableDays.Add(new AvailableDay(j + 2, hours[0], hours[1]));
+                    }
+                    
+                }
+
+                Skill newSkill = new()
+                {
+                    Title = GetCellValue(dataSet, i, "Title"),
+                    Description = GetCellValue(dataSet, i, "Description"),
+                    Category = GetCellValue(dataSet, i, "Category"),
+                    Subcategory = GetCellValue(dataSet, i, "Subcategory"),
+                    Tags = GetCellValue(dataSet, i, "Tags").Split(','),
+                    ServiceType = GetCellValue(dataSet, i, "ServiceType"),
+                    LocationType = GetCellValue(dataSet, i, "LocationType"),
+                    StartDate = GetCellValue(dataSet, i, "StartDate"),
+                    EndDate = GetCellValue(dataSet, i, "EndDate"),
+                    AvailableDays = availableDays.ToArray(),
+                    SkillTrade = GetCellValue(dataSet, i, "SkillTrade"),
+                    SkillExchange =GetCellValue(dataSet, i, "SkillExchange").Split(","),
+                    Credit = GetCellValue(dataSet, i, "Credit"),
+                    Active = GetCellValue(dataSet, i, "Active"),
+
+                };
+                var testCaseId = GetCellValue(dataSet, i, "Test Case ID");
+                var expectedResult = GetCellValue(dataSet, i, "ExpectedResult");
+                ExcelTestCase testCase = new ExcelTestCase()
+                {
+                    TestCaseName = "ShareNewSkill",
+                    TestCaseId = testCaseId,
+                    ExpectedResult = expectedResult,
+                    TestData = newSkill,
+
+                };  
+                tests.Add(testCase);
+            }
+            return tests;
         }
     }
 }

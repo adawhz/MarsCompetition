@@ -19,11 +19,16 @@ namespace MarsCompetition.Pages
             //Select category from category dropdown
             categoryDropdown.Click();
             //categoryOption.Click();
+            var found = false;
             foreach (var option in categoryOptions)
             {
-                if (option.Text == category)
+                if (option.Text == category) 
+                { 
+                    found = true;
                     option.Click();
+                }
             }
+            if (!found) { return; }
 
             //Select subcategory from subcategory dropdown
             subcategoryDropdown.Click();
@@ -88,7 +93,7 @@ namespace MarsCompetition.Pages
             else
                 hiddenRadio.Click();    
         }
-        public void CreateShareSkill(Skill skill)
+        public string CreateShareSkill(Skill skill)
         {
             Wait.WaitToBeVisible(driver, "XPath", "//*[@id=\"requiredField\"]", 10);
             //Add new title          
@@ -138,13 +143,22 @@ namespace MarsCompetition.Pages
 
             //Identify save button and click
             saveButton.Click();
+            try 
+            { 
+                Wait.WaitToBeVisible(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/thead/tr/th[3]", 10);
+                return "Success";
+            } 
+            catch (Exception ex)
+            {
+                return "Failure";
+            }
         }
 
         public String[] GetFirstSkill() 
         {
             //Check if the new share skill has been added successfully
-            Wait.WaitToBeVisible(driver,"XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/thead/tr/th[1]", 10);
-            return new[] { firstSkillTitle.Text, firstShareSkillCategory.Text };
+                Wait.WaitToBeVisible(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/thead/tr/th[3]", 10);
+                return new[] { firstSkillTitle.Text, firstShareSkillCategory.Text };
         }
         private IWebElement titleTextbox => driver.FindElement(By.XPath("//*[@id=\"service-listing-section\"]/div[2]/div/form/div[1]/div/div[2]/div/div[1]/input"));
         private IWebElement descriptionTextbox => driver.FindElement(By.XPath("//*[@id=\"service-listing-section\"]/div[2]/div/form/div[2]/div/div[2]/div[1]/textarea"));

@@ -37,11 +37,11 @@ namespace MarsCompetition.Pages
 
         public void EditShareSkill(string title, string description)
         {
-            //Navigate to the first page
-            IWebElement goToFirstpage = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[2]/button[first()]"));
+            //Navigate to the last page
+            IWebElement goToLastpage = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[2]/button[last-1]"));
 
             //*[@id="listing-management-section"]/div[2]/div[1]/div[2]/button[2]
-            goToFirstpage.Click();
+            goToLastpage.Click();
             Wait.WaitToBeClickable(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[last()]/td[8]/div/button[2]", 10);
 
             //Edit the last listing
