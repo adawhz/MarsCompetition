@@ -63,7 +63,7 @@ namespace MarsCompetition.Excel
                 return value.ToString();
             }
         }
-        public static ICollection<ExcelTestCase> ReadShareNewSkilTestCases(string filepath, string sheetname)
+        public static ICollection<ExcelTestCase> ReadShareSkilTestCases(string filepath, string sheetname)
         {
 
             var dataSet = ReadExcelDataset(filepath,sheetname);
@@ -105,12 +105,39 @@ namespace MarsCompetition.Excel
                 var expectedResult = GetCellValue(dataSet, i, "ExpectedResult");
                 ExcelTestCase testCase = new ExcelTestCase()
                 {
-                    TestCaseName = "ShareNewSkill",
                     TestCaseId = testCaseId,
                     ExpectedResult = expectedResult,
                     TestData = newSkill,
 
                 };  
+                tests.Add(testCase);
+            }
+            return tests;
+        }
+
+        public static ICollection<ExcelTestCase> ReadEditkilTestCases(string filepath, string sheetname)
+        {
+
+            var dataSet = ReadExcelDataset(filepath, sheetname);
+            var tests = new List<ExcelTestCase>();
+            for (int i = 0; i < dataSet.Rows.Count; i++)
+            {
+                
+
+                Skill newSkill = new()
+                {
+                    Title = GetCellValue(dataSet, i, "Title"),
+                    Description = GetCellValue(dataSet, i, "Description"),
+                };
+                var testCaseId = GetCellValue(dataSet, i, "Test Case ID");
+                var expectedResult = GetCellValue(dataSet, i, "ExpectedResult");
+                ExcelTestCase testCase = new ExcelTestCase()
+                {
+                    TestCaseId = testCaseId,
+                    ExpectedResult = expectedResult,
+                    TestData = newSkill,
+
+                };
                 tests.Add(testCase);
             }
             return tests;

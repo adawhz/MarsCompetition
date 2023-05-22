@@ -15,51 +15,26 @@ namespace MarsCompetition.Pages
 
         public ManageListingsPage(IWebDriver driver) { this.driver = driver; }
 
-        public void CheckSkillDetail()
+        public void EditShareSkill(Skill skill)
         {
-            //Get last skill detail
-            //Navigate to the last page
-            IWebElement goToLastpage = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[2]/button[last()]"));
-            goToLastpage.Click();
-            Wait.WaitToBeClickable(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[last()]/td[8]/div/button[1]/", 10);
 
-            //Click eye icon button of last skill record
-            IWebElement lastEyeButton = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[last()]/td[8]/div/button[1]"));
-            lastEyeButton.Click();
-            Wait.WaitToBeVisible(driver,"XPath", "//*[@id=\"service-detail-section\"]/div[2]/div/div[1]/div/div/div/div", 10);
 
-        }
 
-       // public string GetSkillDetail()
-       // {
-
-       // }
-
-        public void EditShareSkill(string title, string description)
-        {
-            //Navigate to the last page
-            IWebElement goToLastpage = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[2]/button[last-1]"));
-
-            //*[@id="listing-management-section"]/div[2]/div[1]/div[2]/button[2]
-            goToLastpage.Click();
-            Wait.WaitToBeClickable(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[last()]/td[8]/div/button[2]", 10);
-
-            //Edit the last listing
-            //Click edit button of last listing
-            IWebElement lastEditButton = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[last()]/td[8]/div/button[2]"));
-            lastEditButton.Click();
+            //Edit the first listing
+            //Click edit button of first listing
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[1]/td[8]/div/button[2]", 10);
+            firstEditButton.Click();
             Wait.WaitToBeVisible(driver, "XPath", "//*[@id=\"requiredField\"]", 10);
 
-            //Edit the title of last listing
-            Wait.WaitToBeClickable(driver,"XPath", "//*[@id=\"service-listing-section\"]/div[2]/div/form/div[1]/div/div[2]/div/div[1]/input", 10);
-            IWebElement lastTitleToBeEdit = driver.FindElement(By.XPath("//*[@id=\"service-listing-section\"]/div[2]/div/form/div[1]/div/div[2]/div/div[1]/input"));
-            lastTitleToBeEdit.Clear();
-            lastTitleToBeEdit.SendKeys(title);
+            //Edit the title
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@id=\"service-listing-section\"]/div[2]/div/form/div[1]/div/div[2]/div/div[1]/input", 10);
+            titleTextbox.Clear();
+            titleTextbox.SendKeys(skill.Title);
 
-            //Edit the discription of last listing
-            IWebElement lastDiscriptionTobeEdit = driver.FindElement(By.XPath("//*[@id=\"service-listing-section\"]/div[2]/div/form/div[2]/div/div[2]/div[1]/textarea"));
-            lastDiscriptionTobeEdit.Clear();
-            lastDiscriptionTobeEdit.SendKeys(description);
+            //Edit the discription 
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@id=\"service-listing-section\"]/div[2]/div/form/div[2]/div/div[2]/div[1]/textarea", 10);
+            descriptionTextbox.Clear();
+            descriptionTextbox.SendKeys(skill.Description);
 
             //Click on save button to update the listing
             IWebElement updateButton = driver.FindElement(By.XPath("//*[@id=\"service-listing-section\"]/div[2]/div/form/div[11]/div/input[1]"));
@@ -67,27 +42,42 @@ namespace MarsCompetition.Pages
             Wait.WaitToBeVisible(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/thead/tr/th[1]", 10);
 
         }
-        
+
         public string[] GetUpdatedShareSkill()
         {
-            //Navigate to the last page
-            IWebElement goToLastpage = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[2]/button[last()]"));
-            goToLastpage.Click();
-            Wait.WaitToBeClickable(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[last()]/td[8]/div/button[2]", 10);
+            //Check if the first listing title and description have been edited successfully
+            return new[] { firstSkillTitle.Text, firstSkillDescription.Text };
+        }
 
-            //Check if the last listing title and description have been edited successfully
-            IWebElement getEditedlistingTitle = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[last()]/td[3]"));
-            IWebElement getEditedListingDescription = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[last()]/td[4]"));
-            return new[] { getEditedlistingTitle.Text, getEditedListingDescription.Text };
+
+        public void CheckSkillDetail()
+        {
+            //Get first skill detail 
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[1]/td[8]/div/button[1]", 10);
+
+            //Click eye icon button of first skill record
+            IWebElement firstEyeButton = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[last()]/td[8]/div/button[1]"));
+            firstEyeButton.Click();
+            Wait.WaitToBeVisible(driver,"XPath", "//*[@id=\"service-detail-section\"]/div[2]/div/div[1]/div/div/div/div", 10);
+        }
+
+        public string[] GetSkillDetail()
+        {
+            IWebElement getFirstSkillTitle = driver.FindElement(By.XPath("//*[@id=\"service-detail-section\"]/div[2]/div/div[2]/div[1]/div[1]/div[2]/h1/span"));
+            IWebElement getFirstSkillDescription = driver.FindElement(By.XPath("//*[@id=\"service-detail-section\"]/div[2]/div/div[2]/div[1]/div[1]/div[2]/div[2]/div/div/div[1]/div/div/div/div[2]"));
+            IWebElement getFirstSkillCategory = driver.FindElement(By.XPath("//*[@id=\"service-detail-section\"]/div[2]/div/div[2]/div[1]/div[1]/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div[2]"));
+            return new[] { getFirstSkillTitle.Text, getFirstSkillDescription.Text, getFirstSkillCategory.Text };
 
 
         }
+
+       
 
         public void DeleteShareSkill()
         {
             //Delete the first skill record
             //Navigate to the first page
-            Wait.WaitToBeClickable(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[2]/button[last()]", 10);
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[2]/button[last-1()]", 10);
             IWebElement goToFirstpage = driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[2]/button[2]"));
             goToFirstpage.Click();
             Wait.WaitToBeVisible(driver,"XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[last()]/td[3]", 10);
@@ -120,6 +110,12 @@ namespace MarsCompetition.Pages
             IWebElement popupNotice = driver.FindElement(By.CssSelector(".ns-box"));
             return popupNotice.Text;
         }
+        private IWebElement firstEditButton => driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[1]/td[8]/div/button[2]"));
+        private IWebElement titleTextbox => driver.FindElement(By.XPath("//*[@id=\"service-listing-section\"]/div[2]/div/form/div[1]/div/div[2]/div/div[1]/input"));
+        private IWebElement descriptionTextbox => driver.FindElement(By.XPath("//*[@id=\"service-listing-section\"]/div[2]/div/form/div[2]/div/div[2]/div[1]/textarea"));
+        private IWebElement firstSkillTitle => driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[1]/td[3]"));
+        private IWebElement firstSkillDescription => driver.FindElement(By.XPath("//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[1]/td[4]"));
+
 
 
     }
