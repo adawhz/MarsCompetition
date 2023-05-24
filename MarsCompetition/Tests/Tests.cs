@@ -31,7 +31,6 @@ namespace MarsCompetition.Tests
         {
            
             Console.WriteLine("Running test case " + testCase.TestCaseId);
-            homePage.GoToProfilePage();
             homePage.GoToShareSkillPage();
 
             var skill = (Skill)testCase.TestData;
@@ -71,7 +70,6 @@ namespace MarsCompetition.Tests
         public void TestEditSkill(ExcelTestCase testCase)
         {
             Console.WriteLine("Running test case " + testCase.TestCaseId);
-            homePage.GoToProfilePage();
             homePage.GoToManageListingsPage();
             var editskill = (Skill)testCase.TestData;
             manageListingsPage.EditShareSkill(editskill);

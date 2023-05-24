@@ -28,6 +28,11 @@ namespace MarsCompetition.Utilities
             {
                 wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector(locatorValue)));
             }
+            if (locatorType == "LinkText")
+            {
+                wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.LinkText(locatorValue)));
+            }
+
         }
 
         public static void WaitToBeVisible(IWebDriver driver, string locatorType, string locatorValue, int seconds)
